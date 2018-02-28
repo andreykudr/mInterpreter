@@ -74,10 +74,64 @@ public class ModelInterpreter implements Interpreter {
         } else if (element.equals(MINUS)) {
             operandStack.push(new NumberElement.Value(getMinusResult(identifiers)));
         } else if (element.equals(LESS)) {
+            processLess(identifiers);
+        } else if (element.equals(MORE)) {
+            processMore(identifiers);
+        } else if (element.equals(MORE_OR_EQUALS)) {
             Float v1 = Float.valueOf(pollOperandValue(identifiers));
             Float v2 = Float.valueOf(pollOperandValue(identifiers));
-            operandStack.push(v1 < v2 ? TRUE : FALSE);
+            operandStack.push(v1 >= v2 ? TRUE : FALSE);
+        } else if (element.equals(LESS_OR_EQUALS)) {
+            Float v1 = Float.valueOf(pollOperandValue(identifiers));
+            Float v2 = Float.valueOf(pollOperandValue(identifiers));
+            operandStack.push(v1 <= v2 ? TRUE : FALSE);
+        } else if (element.equals(NOT_EQUALS)) {
+            Float v1 = Float.valueOf(pollOperandValue(identifiers));
+            Float v2 = Float.valueOf(pollOperandValue(identifiers));
+            operandStack.push(v1.equals(v2) ? FALSE : TRUE);
+        } else if (element.equals(EQUAL)) {
+            Float v1 = Float.valueOf(pollOperandValue(identifiers));
+            Float v2 = Float.valueOf(pollOperandValue(identifiers));
+            operandStack.push(v1.equals(v2) ? TRUE : FALSE);
+        } else if (element.equals(DIVIDE)) {
+            operandStack.push(divide(identifiers));
+        } else if (element.equals(MULTIPLY)) {
+            operandStack.push(multiply(identifiers));
         }
+    }
+
+    private NumberElement.Value multiply(Repository<Identifier> identifiers) {
+        NumberElement el1 = pollNumberOperand(operandStack.pollLast(), identifiers);
+        NumberElement el2 = pollNumberOperand(operandStack.pollLast(), identifiers);
+        if (el1.type().equals(VariableTypes.INT) && el2.type().equals(VariableTypes.INT)) {
+            return new NumberElement.Value(el1.value().intValue() * el2.value().intValue());
+        } else if (el1.type().equals(VariableTypes.FLOAT) || el2.type().equals(VariableTypes.FLOAT)) {
+            return new NumberElement.Value(el1.value().floatValue() * el2.value().floatValue());
+        }
+        throw new IllegalArgumentException();
+    }
+
+    private NumberElement.Value divide(Repository<Identifier> identifiers) {
+        NumberElement el1 = pollNumberOperand(operandStack.pollLast(), identifiers);
+        NumberElement el2 = pollNumberOperand(operandStack.pollLast(), identifiers);
+        if (el1.type().equals(VariableTypes.INT) && el2.type().equals(VariableTypes.INT)) {
+            return new NumberElement.Value(el1.value().intValue() / el2.value().intValue());
+        } else if (el1.type().equals(VariableTypes.FLOAT) || el2.type().equals(VariableTypes.FLOAT)) {
+            return new NumberElement.Value(el1.value().floatValue() / el2.value().floatValue());
+        }
+        throw new IllegalArgumentException();
+    }
+
+    private void processMore(Repository<Identifier> identifiers) {
+        Float v1 = Float.valueOf(pollOperandValue(identifiers));
+        Float v2 = Float.valueOf(pollOperandValue(identifiers));
+        operandStack.push(v1 > v2 ? TRUE : FALSE);
+    }
+
+    private void processLess(Repository<Identifier> identifiers) {
+        Float v1 = Float.valueOf(pollOperandValue(identifiers));
+        Float v2 = Float.valueOf(pollOperandValue(identifiers));
+        operandStack.push(v1 < v2 ? TRUE : FALSE);
     }
 
     private boolean shouldPasteToOperandStack(ElementName element) {

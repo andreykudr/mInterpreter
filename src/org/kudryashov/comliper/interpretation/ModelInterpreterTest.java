@@ -75,6 +75,36 @@ public class ModelInterpreterTest {
     }
 
     @Test
+    public void shouldInterpretMore() {
+        sut.interpret(asList(new NumberElement.Value(1.2f), new NumberElement.Value(2), MORE, WRITE), identifiers);
+        assertEquals(output.toString(), "FALSE");
+    }
+
+    @Test
+    public void shoulInterpretMoreEqual() {
+        sut.interpret(asList(new NumberElement.Value(1.2f), new NumberElement.Value(2), MORE_OR_EQUALS, WRITE), identifiers);
+        assertEquals(output.toString(), "FALSE");
+    }
+
+    @Test
+    public void shouldInterpretLessEqual() {
+        sut.interpret(asList(new NumberElement.Value(1.2f), new NumberElement.Value(2), LESS_OR_EQUALS, WRITE), identifiers);
+        assertEquals(output.toString(), "TRUE");
+    }
+
+    @Test
+    public void shouldInterpretNotEqual() {
+        sut.interpret(asList(new NumberElement.Value(1.2f), new NumberElement.Value(1.20f), NOT_EQUALS, WRITE), identifiers);
+        assertEquals(output.toString(), "FALSE");
+    }
+
+    @Test
+    public void shouldInterpretEqual() {
+        sut.interpret(asList(new NumberElement.Value(1.2f), new NumberElement.Value(1.20f), EQUAL, WRITE), identifiers);
+        assertEquals(output.toString(), "TRUE");
+    }
+
+    @Test
     public void shouldInterpretPlus_WithInteger() {
         sut.interpret(asList(new NumberElement.Value(1), new NumberElement.Value(2), PLUS, WRITE), identifiers);
         assertEquals(output.toString(), "3");
@@ -96,6 +126,30 @@ public class ModelInterpreterTest {
     public void shouldInterpretMinus_WithFloat() {
         sut.interpret(asList(new NumberElement.Value(3.1f), new NumberElement.Value(2.1f), MINUS, WRITE), identifiers);
         assertEquals(output.toString(), "1.0");
+    }
+
+    @Test
+    public void shouldDivideIntegers() {
+        sut.interpret(asList(new NumberElement.Value(3), new NumberElement.Value(2), DIVIDE, WRITE), identifiers);
+        assertEquals(output.toString(), "1");
+    }
+
+    @Test
+    public void shouldDivideFloat() {
+        sut.interpret(asList(new NumberElement.Value(3f), new NumberElement.Value(2), DIVIDE, WRITE), identifiers);
+        assertEquals(output.toString(), "1.5");
+    }
+
+    @Test
+    public void shouldMultiplyInt() {
+        sut.interpret(asList(new NumberElement.Value(3), new NumberElement.Value(2), MULTIPLY, WRITE), identifiers);
+        assertEquals(output.toString(), "6");
+    }
+
+    @Test
+    public void shouldMultiplyFloat() {
+        sut.interpret(asList(new NumberElement.Value(3f), new NumberElement.Value(1.5), MULTIPLY, WRITE), identifiers);
+        assertEquals(output.toString(), "4.5");
     }
 
     @Test
