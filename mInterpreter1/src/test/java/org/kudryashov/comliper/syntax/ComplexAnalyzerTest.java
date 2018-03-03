@@ -1,12 +1,9 @@
 package org.kudryashov.comliper.syntax;
 
 import org.kudryashov.comliper.Instances;
-import org.kudryashov.comliper.elements.elementTypes.ProgramElement;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
-import java.util.List;
 
 public class ComplexAnalyzerTest {
 

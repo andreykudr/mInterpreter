@@ -4,18 +4,15 @@ import org.kudryashov.comliper.elements.elementTypes.ElementName;
 import org.kudryashov.comliper.elements.elementTypes.Identifier;
 import org.kudryashov.comliper.elements.elementTypes.NumberElement;
 import org.kudryashov.comliper.elements.elementTypes.ProgramElement;
-import org.kudryashov.comliper.elements.elementTypes.separator.Separator;
-import org.kudryashov.comliper.elements.elementTypes.util.poliz.AdditionalPolizElements;
 import org.kudryashov.comliper.elements.elementTypes.util.poliz.PolizElementNumber;
-import org.kudryashov.comliper.elements.elementTypes.word.enumeration.Word;
 import org.kudryashov.comliper.syntax.SemanticAnalyzer;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.kudryashov.comliper.elements.elementTypes.separator.Separator.Name.*;
+import static org.kudryashov.comliper.elements.elementTypes.separator.Separator.Name.LESS;
+import static org.kudryashov.comliper.elements.elementTypes.separator.Separator.Name.PLUS;
 import static org.kudryashov.comliper.elements.elementTypes.util.poliz.AdditionalPolizElements.GOTO;
 import static org.kudryashov.comliper.elements.elementTypes.util.poliz.AdditionalPolizElements.REVERT_IF;
 import static org.kudryashov.comliper.elements.elementTypes.word.enumeration.Word.*;
