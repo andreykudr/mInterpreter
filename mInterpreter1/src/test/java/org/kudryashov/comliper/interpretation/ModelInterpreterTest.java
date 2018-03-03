@@ -105,6 +105,18 @@ public class ModelInterpreterTest {
     }
 
     @Test
+    public void shouldInterpretOr() {
+        sut.interpret(asList(FALSE, TRUE, LOGIC_OR, WRITE), identifiers);
+        assertEquals(output.toString(), "TRUE");
+    }
+
+    @Test
+    public void shouldInterpretAnd() {
+        sut.interpret(asList(TRUE, FALSE, LOGIC_AND, WRITE), identifiers);
+        assertEquals(output.toString(), "FALSE");
+    }
+
+    @Test
     public void shouldInterpretPlus_WithInteger() {
         sut.interpret(asList(new NumberElement.Value(1), new NumberElement.Value(2), PLUS, WRITE), identifiers);
         assertEquals(output.toString(), "3");

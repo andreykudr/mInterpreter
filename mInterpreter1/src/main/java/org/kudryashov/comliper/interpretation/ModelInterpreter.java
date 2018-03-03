@@ -97,6 +97,14 @@ public class ModelInterpreter implements Interpreter {
             operandStack.push(divide(identifiers));
         } else if (element.equals(MULTIPLY)) {
             operandStack.push(multiply(identifiers));
+        } else if (element.equals(LOGIC_OR)) {
+            operandStack.push(
+                    operandStack.pollLast().equals(TRUE) | operandStack.pollLast().equals(TRUE)
+                            ? TRUE : FALSE);
+        } else if (element.equals(LOGIC_AND)) {
+            operandStack.push(
+                    operandStack.pollLast().equals(TRUE) & operandStack.pollLast().equals(TRUE)
+                            ? TRUE : FALSE);
         }
     }
 
