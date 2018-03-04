@@ -35,4 +35,12 @@ public class Interpret {
     public static void setInterpreter(Interpreter interpreter) {
         Interpret.interpreter = interpreter;
     }
+
+    public static void setSemanticAnalyzer(SemanticAnalyzer semanticAnalyzer) {
+        Interpret.semanticAnalyzer = semanticAnalyzer;
+    }
+
+    public static void setIdentifiers(Repository<Identifier> identifiers) {
+        Interpret.identifiers = identifiers;
+    }
 }

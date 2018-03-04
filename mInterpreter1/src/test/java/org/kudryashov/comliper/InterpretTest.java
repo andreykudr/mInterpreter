@@ -1,6 +1,7 @@
 package org.kudryashov.comliper;
 
 import org.kudryashov.comliper.interpretation.ModelInterpreter;
+import org.kudryashov.comliper.syntax.SemanticAnalyzer;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -26,6 +27,8 @@ public class InterpretTest {
                     System.out,
                     input
         ));
+        Interpret.setSemanticAnalyzer(new SemanticAnalyzer());
+        Interpret.setIdentifiers(Instances.get(Instances.IDENTIFIERS));
     }
 
     @Test

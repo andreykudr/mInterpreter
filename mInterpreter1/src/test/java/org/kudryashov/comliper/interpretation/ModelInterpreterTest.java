@@ -43,20 +43,20 @@ public class ModelInterpreterTest {
     @Test
     public void shouldWriteResultOnOutputStream() {
         sut.interpret(asList(TRUE, WRITE), identifiers);
-        assertEquals(output.toString(), "TRUE");
+        assertEquals(output.toString(), "TRUE\n");
     }
 
     @Test
     public void shouldCalculateExpression() {
         sut.interpret(asList(new NumberElement.Value(1), new NumberElement.Value(2), PLUS, WRITE), identifiers);
-        assertEquals(output.toString(), "3");
+        assertEquals(output.toString(), "3\n");
     }
 
     @Test
     public void shouldInterpretAs() {
         Identifier.Name var1name = defineVar1();
         sut.interpret(asList(var1name, new NumberElement.Value(1), AS, var1name, WRITE), identifiers);
-        assertEquals(output.toString(), "1");
+        assertEquals(output.toString(), "1\n");
     }
 
     @Test
@@ -65,104 +65,104 @@ public class ModelInterpreterTest {
         GotoLabel endIfLabel = new GotoLabel();
         sut.interpret(asList(TRUE, new PolizPointer(elseBranchLabel), REVERT_IF, FALSE, WRITE, new PolizPointer(endIfLabel),
                 GOTO, elseBranchLabel, TRUE, WRITE, endIfLabel), identifiers);
-        assertEquals(output.toString(), "FALSE");
+        assertEquals(output.toString(), "FALSE\n");
     }
 
 
     @Test
     public void shouldInterpretLess() {
         sut.interpret(asList(new NumberElement.Value(1), new NumberElement.Value(2), LESS, WRITE), identifiers);
-        assertEquals(output.toString(), "TRUE");
+        assertEquals(output.toString(), "TRUE\n");
     }
 
     @Test
     public void shouldInterpretMore() {
         sut.interpret(asList(new NumberElement.Value(1.2f), new NumberElement.Value(2), MORE, WRITE), identifiers);
-        assertEquals(output.toString(), "FALSE");
+        assertEquals(output.toString(), "FALSE\n");
     }
 
     @Test
     public void shoulInterpretMoreEqual() {
         sut.interpret(asList(new NumberElement.Value(1.2f), new NumberElement.Value(2), MORE_OR_EQUALS, WRITE), identifiers);
-        assertEquals(output.toString(), "FALSE");
+        assertEquals(output.toString(), "FALSE\n");
     }
 
     @Test
     public void shouldInterpretLessEqual() {
         sut.interpret(asList(new NumberElement.Value(1.2f), new NumberElement.Value(2), LESS_OR_EQUALS, WRITE), identifiers);
-        assertEquals(output.toString(), "TRUE");
+        assertEquals(output.toString(), "TRUE\n");
     }
 
     @Test
     public void shouldInterpretNotEqual() {
         sut.interpret(asList(new NumberElement.Value(1.2f), new NumberElement.Value(1.20f), NOT_EQUALS, WRITE), identifiers);
-        assertEquals(output.toString(), "FALSE");
+        assertEquals(output.toString(), "FALSE\n");
     }
 
     @Test
     public void shouldInterpretEqual() {
         sut.interpret(asList(new NumberElement.Value(1.2f), new NumberElement.Value(1.20f), EQUAL, WRITE), identifiers);
-        assertEquals(output.toString(), "TRUE");
+        assertEquals(output.toString(), "TRUE\n");
     }
 
     @Test
     public void shouldInterpretOr() {
         sut.interpret(asList(FALSE, TRUE, LOGIC_OR, WRITE), identifiers);
-        assertEquals(output.toString(), "TRUE");
+        assertEquals(output.toString(), "TRUE\n");
     }
 
     @Test
     public void shouldInterpretAnd() {
         sut.interpret(asList(TRUE, FALSE, LOGIC_AND, WRITE), identifiers);
-        assertEquals(output.toString(), "FALSE");
+        assertEquals(output.toString(), "FALSE\n");
     }
 
     @Test
     public void shouldInterpretPlus_WithInteger() {
         sut.interpret(asList(new NumberElement.Value(1), new NumberElement.Value(2), PLUS, WRITE), identifiers);
-        assertEquals(output.toString(), "3");
+        assertEquals(output.toString(), "3\n");
     }
 
     @Test
     public void shouldInterpretPlus_WithFloat() {
         sut.interpret(asList(new NumberElement.Value(1.5f), new NumberElement.Value(2.1f), PLUS, WRITE), identifiers);
-        assertEquals(output.toString(), "3.6");
+        assertEquals(output.toString(), "3.6\n");
     }
 
     @Test
     public void shouldInterpretMinus_WithInt() {
         sut.interpret(asList(new NumberElement.Value(1), new NumberElement.Value(2), MINUS, WRITE), identifiers);
-        assertEquals(output.toString(), "-1");
+        assertEquals(output.toString(), "-1\n");
     }
 
     @Test
     public void shouldInterpretMinus_WithFloat() {
         sut.interpret(asList(new NumberElement.Value(3.1f), new NumberElement.Value(2.1f), MINUS, WRITE), identifiers);
-        assertEquals(output.toString(), "1.0");
+        assertEquals(output.toString(), "1.0\n");
     }
 
     @Test
     public void shouldDivideIntegers() {
         sut.interpret(asList(new NumberElement.Value(3), new NumberElement.Value(2), DIVIDE, WRITE), identifiers);
-        assertEquals(output.toString(), "1");
+        assertEquals(output.toString(), "1\n");
     }
 
     @Test
     public void shouldDivideFloat() {
         sut.interpret(asList(new NumberElement.Value(3f), new NumberElement.Value(2), DIVIDE, WRITE), identifiers);
-        assertEquals(output.toString(), "1.5");
+        assertEquals(output.toString(), "1.5\n");
     }
 
     @Test
     public void shouldMultiplyInt() {
         sut.interpret(asList(new NumberElement.Value(3), new NumberElement.Value(2), MULTIPLY, WRITE), identifiers);
-        assertEquals(output.toString(), "6");
+        assertEquals(output.toString(), "6\n");
     }
 
     @Test
     public void shouldMultiplyFloat() {
         sut.interpret(asList(new NumberElement.Value(3f), new NumberElement.Value(1.5), MULTIPLY, WRITE), identifiers);
-        assertEquals(output.toString(), "4.5");
+        assertEquals(output.toString(), "4.5\n");
     }
 
     @Test
@@ -173,7 +173,7 @@ public class ModelInterpreterTest {
         sut.interpret(asList(var1name, new NumberElement.Value(0), AS, startOfExpressionLabel, var1name, new NumberElement.Value(10), LESS,
                 new PolizPointer(endOfForLabel), REVERT_IF, var1name, WRITE, var1name, new NumberElement.Value(1), var1name,
                 PLUS, AS, new PolizPointer(startOfExpressionLabel), GOTO, endOfForLabel), identifiers);
-        assertEquals(output.toString(), "0123456789");
+        assertEquals(output.toString(), "0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n");
     }
 
     @Test
@@ -182,7 +182,7 @@ public class ModelInterpreterTest {
 
         Identifier.Name var1name = defineVar1();
         sut.interpret(asList(var1name, READ, var1name, WRITE), identifiers);
-        assertEquals(output.toString(), "111");
+        assertEquals(output.toString(), "111\n");
     }
 
     private Identifier.Name defineVar1() {
