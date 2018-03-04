@@ -2,15 +2,13 @@ package org.kudryashov.comliper.elements.elementTypes.operator;
 
 import org.kudryashov.comliper.elements.elementTypes.ElementName;
 import org.kudryashov.comliper.elements.elementTypes.util.Expression;
-import org.kudryashov.comliper.elements.elementTypes.util.poliz.AdditionalPolizElements;
-import org.kudryashov.comliper.elements.elementTypes.util.poliz.PolizElementNumber;
+import org.kudryashov.comliper.elements.elementTypes.util.poliz.GotoLabel;
+import org.kudryashov.comliper.elements.elementTypes.util.poliz.PolizPointer;
 import org.kudryashov.comliper.elements.elementTypes.word.ReservedWord;
 import org.kudryashov.comliper.elements.elementTypes.word.enumeration.Word;
-import org.kudryashov.comliper.elements.elementTypes.word.type.VariableType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static org.kudryashov.comliper.elements.elementTypes.util.poliz.AdditionalPolizElements.GOTO;
 import static org.kudryashov.comliper.elements.elementTypes.util.poliz.AdditionalPolizElements.REVERT_IF;
@@ -37,15 +35,17 @@ public class ForOperator extends ReservedWord implements TripleOperator<AsOperat
     public List<ElementName> toPoliz() {
         ArrayList<ElementName> poliz = new ArrayList<>();
         poliz.addAll(asOperator.toPoliz());
-        int startOfExpression = poliz.size();
+        GotoLabel cycleStartLabel = new GotoLabel();
+        poliz.add(cycleStartLabel);
         poliz.addAll(expression.toPoliz());
-        PolizElementNumber endOfFor = new PolizElementNumber();
-        poliz.add(endOfFor);
+        GotoLabel endForLabel = new GotoLabel();
+        PolizPointer endOfForPointer = new PolizPointer(endForLabel);
+        poliz.add(endOfForPointer);
         poliz.add(REVERT_IF);
         poliz.addAll(operator.toPoliz());
-        poliz.add(new PolizElementNumber(startOfExpression));
+        poliz.add(new PolizPointer(cycleStartLabel));
         poliz.add(GOTO);
-        endOfFor.number = poliz.size();
+        poliz.add(endForLabel);
         return poliz;
     }
 }

@@ -4,18 +4,24 @@ import org.kudryashov.comliper.Instances;
 import org.kudryashov.comliper.elements.elementTypes.Identifier;
 import org.kudryashov.comliper.elements.elementTypes.NumberElement;
 import org.kudryashov.comliper.elements.elementTypes.repositories.Repository;
-import org.kudryashov.comliper.elements.elementTypes.util.poliz.PolizElementNumber;
+import org.kudryashov.comliper.elements.elementTypes.util.poliz.GotoLabel;
+import org.kudryashov.comliper.elements.elementTypes.util.poliz.PolizPointer;
 import org.kudryashov.comliper.elements.elementTypes.word.type.VariableTypes;
+import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import static java.util.Arrays.asList;
 import static org.kudryashov.comliper.elements.elementTypes.separator.Separator.Name.*;
 import static org.kudryashov.comliper.elements.elementTypes.util.poliz.AdditionalPolizElements.GOTO;
 import static org.kudryashov.comliper.elements.elementTypes.util.poliz.AdditionalPolizElements.REVERT_IF;
 import static org.kudryashov.comliper.elements.elementTypes.word.enumeration.Word.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 
 public class ModelInterpreterTest {
@@ -23,12 +29,14 @@ public class ModelInterpreterTest {
     private ModelInterpreter sut;
     private ByteArrayOutputStream output;
     private Repository<Identifier> identifiers;
-
+    @Mock
+    private BufferedReader reader;
 
     @BeforeMethod
     public void setup() {
+        initMocks(this);
         output = new ByteArrayOutputStream();
-        sut = new ModelInterpreter(output);
+        sut = new ModelInterpreter(output, reader);
         identifiers = Instances.get(Instances.IDENTIFIERS);
     }
 
@@ -46,27 +54,20 @@ public class ModelInterpreterTest {
 
     @Test
     public void shouldInterpretAs() {
-        Identifier.Name var1name = new Identifier.Name("var1");
-        Identifier var1 = identifiers.get(var1name);
-        var1.define(VariableTypes.INT);
+        Identifier.Name var1name = defineVar1();
         sut.interpret(asList(var1name, new NumberElement.Value(1), AS, var1name, WRITE), identifiers);
         assertEquals(output.toString(), "1");
     }
 
     @Test
     public void shouldInterpretIf() {
-        sut.interpret(asList(TRUE, new PolizElementNumber(7), REVERT_IF, FALSE, WRITE, new PolizElementNumber(9),
-                GOTO, TRUE, WRITE), identifiers);
+        GotoLabel elseBranchLabel = new GotoLabel();
+        GotoLabel endIfLabel = new GotoLabel();
+        sut.interpret(asList(TRUE, new PolizPointer(elseBranchLabel), REVERT_IF, FALSE, WRITE, new PolizPointer(endIfLabel),
+                GOTO, elseBranchLabel, TRUE, WRITE, endIfLabel), identifiers);
         assertEquals(output.toString(), "FALSE");
     }
 
-    @Test
-    public void shouldInterpretIfWithElseBranch() {
-        sut.interpret(asList(FALSE, new PolizElementNumber(7), REVERT_IF, FALSE, WRITE, new PolizElementNumber(9),
-                GOTO, TRUE, WRITE), identifiers);
-        assertEquals(output.toString(), "TRUE");
-
-    }
 
     @Test
     public void shouldInterpretLess() {
@@ -166,12 +167,28 @@ public class ModelInterpreterTest {
 
     @Test
     public void shouldInterpretFor() {
+        Identifier.Name var1name = defineVar1();
+        GotoLabel endOfForLabel = new GotoLabel();
+        GotoLabel startOfExpressionLabel = new GotoLabel();
+        sut.interpret(asList(var1name, new NumberElement.Value(0), AS, startOfExpressionLabel, var1name, new NumberElement.Value(10), LESS,
+                new PolizPointer(endOfForLabel), REVERT_IF, var1name, WRITE, var1name, new NumberElement.Value(1), var1name,
+                PLUS, AS, new PolizPointer(startOfExpressionLabel), GOTO, endOfForLabel), identifiers);
+        assertEquals(output.toString(), "0123456789");
+    }
+
+    @Test
+    public void shouldInterpretRead() throws IOException {
+        when(reader.readLine()).thenReturn("111");
+
+        Identifier.Name var1name = defineVar1();
+        sut.interpret(asList(var1name, READ, var1name, WRITE), identifiers);
+        assertEquals(output.toString(), "111");
+    }
+
+    private Identifier.Name defineVar1() {
         Identifier.Name var1name = new Identifier.Name("var1");
         Identifier var1 = identifiers.get(var1name);
         var1.define(VariableTypes.INT);
-        sut.interpret(asList(var1name, new NumberElement.Value(0), AS, var1name, new NumberElement.Value(10), LESS,
-                new PolizElementNumber(18), REVERT_IF, var1name, WRITE, var1name, new NumberElement.Value(1), var1name,
-                PLUS, AS, new PolizElementNumber(3), GOTO), identifiers);
-        assertEquals(output.toString(), "0123456789");
+        return var1name;
     }
 }

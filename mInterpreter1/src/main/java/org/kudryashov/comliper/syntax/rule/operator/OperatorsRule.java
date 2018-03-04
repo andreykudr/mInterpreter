@@ -19,7 +19,7 @@ public class OperatorsRule implements SyntaxRule<ComplexOperator> {
         for (; ; ) {
             Operator operator = new OperatorRule().apply(lexemes);
             if (operator == null) {
-                return null;
+                return new ComplexOperator(operators);
             } else {
                 operators.add(operator);
             }

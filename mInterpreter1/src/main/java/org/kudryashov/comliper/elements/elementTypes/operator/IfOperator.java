@@ -1,10 +1,9 @@
 package org.kudryashov.comliper.elements.elementTypes.operator;
 
 import org.kudryashov.comliper.elements.elementTypes.ElementName;
-import org.kudryashov.comliper.elements.elementTypes.ProgramElement;
 import org.kudryashov.comliper.elements.elementTypes.util.Expression;
-import org.kudryashov.comliper.elements.elementTypes.util.poliz.AdditionalPolizElements;
-import org.kudryashov.comliper.elements.elementTypes.util.poliz.PolizElementNumber;
+import org.kudryashov.comliper.elements.elementTypes.util.poliz.GotoLabel;
+import org.kudryashov.comliper.elements.elementTypes.util.poliz.PolizPointer;
 import org.kudryashov.comliper.elements.elementTypes.word.ReservedWord;
 import org.kudryashov.comliper.elements.elementTypes.word.enumeration.Word;
 import org.kudryashov.comliper.elements.elementTypes.word.type.VariableType;
@@ -13,7 +12,6 @@ import java.util.*;
 
 import static org.kudryashov.comliper.elements.elementTypes.util.poliz.AdditionalPolizElements.GOTO;
 import static org.kudryashov.comliper.elements.elementTypes.util.poliz.AdditionalPolizElements.REVERT_IF;
-import static org.kudryashov.comliper.elements.elementTypes.word.type.VariableTypes.BOOL;
 
 public class IfOperator extends ReservedWord implements BinaryOperator<Expression, Operator> {
 
@@ -68,18 +66,21 @@ public class IfOperator extends ReservedWord implements BinaryOperator<Expressio
     public List<ElementName> toPoliz() {
         ArrayList<ElementName> poliz = new ArrayList<>();
         poliz.addAll(expression.toPoliz());
-        PolizElementNumber elseBranchIndex = new PolizElementNumber();
-        poliz.add(elseBranchIndex);
+        GotoLabel elseBranchLabel = new GotoLabel();
+        PolizPointer elseBranchPointer = new PolizPointer(elseBranchLabel);
+        poliz.add(elseBranchPointer);
         poliz.add(REVERT_IF);
         poliz.addAll(operator.toPoliz());
-        PolizElementNumber endIfIndex = new PolizElementNumber();
-        poliz.add(endIfIndex);
+        GotoLabel endIfLabel = new GotoLabel();
+        PolizPointer endIfPointer = new PolizPointer(endIfLabel);
+        poliz.add(endIfPointer);
         poliz.add(GOTO);
-        elseBranchIndex.number = poliz.size();
+        poliz.add(elseBranchLabel);
         if (elseOperator != null) {
             poliz.addAll(elseOperator.toPoliz());
         }
-        endIfIndex.number = poliz.size();
+        poliz.add(new PolizPointer(endIfLabel));
+        poliz.add(endIfLabel);
         return poliz;
     }
 }

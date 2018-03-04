@@ -23,7 +23,7 @@ public class StartNode implements Node {
 
         @Override
         public boolean satisfied(LexicalContext context) {
-            return isSpaceChar(context.currentCharacter());
+            return isWhitespace(context.currentCharacter());
         }
 
         @Override

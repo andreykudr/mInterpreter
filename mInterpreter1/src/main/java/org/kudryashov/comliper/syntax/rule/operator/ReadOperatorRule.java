@@ -21,7 +21,7 @@ public class ReadOperatorRule implements SyntaxRule<ReadOperator> {
         if (check(lexemes.pop(), READ) && check(lexemes.pop(), LEFTBRACE)) {
             identifiers = checkIdentifiers(lexemes);
             if (!identifiers.isEmpty() && check(lexemes.pop(), RIGHTBRACE)) {
-                return new ReadOperator();
+                return new ReadOperator(identifiers);
             }
         }
         return null;
