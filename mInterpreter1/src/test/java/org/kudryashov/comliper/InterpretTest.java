@@ -112,5 +112,10 @@ public class InterpretTest {
         Interpret.main(text);
     }
 
+    @Test
+    public void simple() {
+        Interpret.main("program var int v1 begin v1 as 1; v1 as v1 + 2; write(1 < v1); write(not true) end.");
+    }
+
 
 }
